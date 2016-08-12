@@ -105,9 +105,9 @@ class BranchManager(models.Manager):
 		schedules = data.pop('schedule', [])
 
 		branchBreakObject = Break.objects.get(id=branchBreak.get('id', instance.branchBreak.id))
-		branchBreakObject.time_from = branchBreak.get('time_from', instance.branchBreak.time_from)
-		branchBreakObject.time_to = branchBreak.get('time_to', instance.branchBreak.time_to)
 		branchBreakObject.isWithoutBreak = branchBreak.get('isWithoutBreak', instance.branchBreak.isWithoutBreak)
+		branchBreakObject.time_from = None if branchBreakObject.isWithoutBreak else branchBreak.get('time_from', instance.branchBreak.time_from)
+		branchBreakObject.time_to = None if branchBreakObject.isWithoutBreak else  branchBreak.get('time_to', instance.branchBreak.time_to)
 
 		branchBreakObject.save()
 		
@@ -132,9 +132,13 @@ class BranchManager(models.Manager):
 		for schedule in schedules:
 			scheduleObj = Schedule.objects.get(id=schedule.get('id'))
 			scheduleObj.days.clear()
-			scheduleObj.time_from = schedule.get('time_from', scheduleObj.time_from)
-			scheduleObj.time_to = schedule.get('time_to', scheduleObj.time_to)
 			scheduleObj.isAroundTheClock = schedule.get('isAroundTheClock', scheduleObj.isAroundTheClock)
+			if scheduleObj.isAroundTheClock or scheduleObj.type == Schedule.DO:
+				scheduleObj.time_from = None
+				scheduleObj.time_to = None
+			else:
+				scheduleObj.time_from = schedule.get('time_from', scheduleObj.time_from)
+				scheduleObj.time_to = schedule.get('time_to', scheduleObj.time_to)
 			scheduleObj.save()
 
 			for day in schedule.get('days', []):
