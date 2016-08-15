@@ -105,4 +105,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = ''
+
 CORS_ORIGIN_ALLOW_ALL = True
