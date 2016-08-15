@@ -37,4 +37,9 @@ class InitialStateViewSet(viewsets.ViewSet):
 		service_ser = ServiceSerializer(service_qs, many=True)
 
 		return response.Response({"currencies": currency_ser.data, "services": service_ser.data}, status=status.HTTP_200_OK)
+
+class BranchesInfoViewSet(viewsets.ModelViewSet):
+	queryset = Branch.objects.all()
+	serializer_class = BranchInfoSerializer
+
 	

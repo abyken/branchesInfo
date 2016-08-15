@@ -9,6 +9,7 @@ router.register(r'currencies', CurrencyViewSet, 'currencies')
 router.register(r'services', ServiceViewSet, 'services')
 router.register(r'schedules', ScheduleViewSet, 'schedules')
 router.register(r'initial-state', InitialStateViewSet, 'initial_state')
+router.register(r'branches-info', BranchesInfoViewSet, 'branches_info')
 
 urlpatterns = [
 	url(r'api/v1/', include(router.urls))
