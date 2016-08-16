@@ -155,15 +155,6 @@ IF EXIST "%DEPLOYMENT_TARGET%\manage.py" (
   )
 )
 
-:: 8. Create superuser
-IF EXIST "%DEPLOYMENT_TARGET%\manage.py" (
-  IF EXIST "%DEPLOYMENT_TARGET%\env\lib\site-packages\django" (
-    echo Create SuperUser
-    env\scripts\python manage.py create_user
-  )
-)
-
-
 popd
 
 :postPython
