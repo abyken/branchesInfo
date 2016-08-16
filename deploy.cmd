@@ -150,7 +150,7 @@ IF EXIST "%DEPLOYMENT_TARGET%\manage.py" (
 :: 7. Django migration
 IF EXIST "%DEPLOYMENT_TARGET%\manage.py" (
   IF EXIST "%DEPLOYMENT_TARGET%\env\lib\site-packages\django" (
-  	echo Django migration
+  	echo Django migration.
   	env/scripts/python manage.py migrate
   )
 )
@@ -158,7 +158,7 @@ IF EXIST "%DEPLOYMENT_TARGET%\manage.py" (
 :: 8. Django running server on port 80
 IF EXIST "%DEPLOYMENT_TARGET%\manage.py" (
   IF EXIST "%DEPLOYMENT_TARGET%\env\lib\site-packages\django" (
-  	echo Django server running on port 80
+  	echo Django server running on port 80.
   	env/scripts/python manage.py runserver 0.0.0.0:80
   )
 )
