@@ -159,8 +159,7 @@ IF EXIST "%DEPLOYMENT_TARGET%\manage.py" (
 IF EXIST "%DEPLOYMENT_TARGET%\manage.py" (
   IF EXIST "%DEPLOYMENT_TARGET%\env\lib\site-packages\django" (
     echo Create SuperUser
-    env\scripts\python manage.py createsuperuser --username admin --email abyken.nurlan@gmail.com
-    echo password password
+    env\scripts\python manage.py create_user
   )
 )
 
