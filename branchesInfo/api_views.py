@@ -2,10 +2,17 @@ from rest_framework import viewsets, response, filters, status
 from rest_framework.decorators import list_route, detail_route
 from .models import *
 from .serializers import *
+from .filters import *
 
 class BranchViewSet(viewsets.ModelViewSet):
 	queryset = Branch.objects.all()
 	serializer_class = BranchSerializer
+
+	def get_queryset(self):
+		queryset = super(self.__class__, self).get_queryset()
+		filtered_qs = BranchFilter(self.request.query_params, queryset)
+
+		return filtered_qs.qs
 
 	
 class BreakViewSet(viewsets.ModelViewSet):
@@ -41,5 +48,6 @@ class InitialStateViewSet(viewsets.ViewSet):
 class BranchesInfoViewSet(viewsets.ModelViewSet):
 	queryset = Branch.objects.all()
 	serializer_class = BranchInfoSerializer
+
 
 	
