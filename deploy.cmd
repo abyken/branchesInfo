@@ -155,14 +155,6 @@ IF EXIST "%DEPLOYMENT_TARGET%\manage.py" (
   )
 )
 
-:: 8. Django running server on port 8000
-IF EXIST "%DEPLOYMENT_TARGET%\manage.py" (
-  IF EXIST "%DEPLOYMENT_TARGET%\env\lib\site-packages\django" (
-  	echo Django server running on port 8000.
-  	env\scripts\python manage.py runserver 0.0.0.0:8000
-  )
-)
-
 popd
 
 :postPython
