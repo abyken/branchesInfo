@@ -16,6 +16,7 @@ class BaseModel(models.Model):
 class Break(BaseModel):
 	time_from = models.CharField(max_length=50, null=True, blank=True)
 	time_to = models.CharField(max_length=50, null=True, blank=True)
+	isFlexible = models.BooleanField(default=False)
 	isWithoutBreak = models.BooleanField(default=False)
 
 	def __unicode__(self):
@@ -23,6 +24,14 @@ class Break(BaseModel):
 			return "without break"
 
 		return self.time_from + "-" + self.time_to
+
+	@classmethod
+	def create_default(cls):
+		branchBreak = Break(time_from="13:00",
+								  time_to="14:00",
+								  isWithoutBreak=False)
+		branchBreak.save()
+		return branchBreak
 
 
 class Currency(BaseModel):
@@ -107,24 +116,12 @@ class Schedule(BaseModel):
 class BranchManager(models.Manager):
 
 	def create_branch(self, **data):
-		branchBreakObject = Break(time_from="13:00",
-								  time_to="14:00",
-								  isWithoutBreak=False)
-		branchBreakObject.save()
+		
 
-		data['branchBreak'] = branchBreakObject
+		data['branchBreak'] = Break.create_default()
 
 		branch = Branch.objects.create(**data)
-		scheduleWD = Schedule(type=Schedule.WD,
-									time_from="09:00",
-									time_to="18:00")
-		scheduleSD = Schedule(type=Schedule.SD,
-									time_from=None,
-									time_to=None)
-		scheduleWD.save()
-		scheduleSD.save()
-		
-		branch.schedule.add(scheduleWD, scheduleSD)
+		branch.create_default_schedule()
 
 		for day in Day.objects.all():
 			if day.name not in [Day.SAT, Day.SUN]:
@@ -182,11 +179,11 @@ class Branch(BaseModel):
 	TYPE_OPTIONS = zip(TYPE_KEYS, TYPE_CAPS)
 
 	CLIENT_KEYS = (INDIVIDUAL, CORPORATION, BOTH) = ('INDIVIDUAL', 'CORPORATION', 'BOTH')
-	CLIENT_CAPS = (u'Физ.л.', u'Юр.л.', u'Физ.л./Юр.л.')
+	CLIENT_CAPS = (u'Физ. лица', u'Юр. лица', u'Физ. лица/Юр. лица"')
 	CLIENT_OPTIONS = zip(CLIENT_KEYS, CLIENT_CAPS)
 
 	ACCESS_KEYS = (LIMITED, UNLIMITED) = ('LIMITED', 'UNLIMITED')
-	ACCESS_CAPS = (u'Пропускная система', u'Неограниченный')
+	ACCESS_CAPS = (u'Ограниченный', u'Неограниченный')
 	ACCESS_OPTIONS = zip(ACCESS_KEYS, ACCESS_CAPS)
 
 
@@ -194,6 +191,7 @@ class Branch(BaseModel):
 	type = models.CharField(max_length=10, choices=TYPE_OPTIONS, default=BRANCH)
 	isCashIn = models.BooleanField(default=False)
 	isEmpty = models.BooleanField(default=True)
+	isLimitedAccess = models.BooleanField(default=False)
 	isAroundTheClock = models.BooleanField(default=False)
 	lat = models.DecimalField(max_digits=15, decimal_places=6, null=True, blank=True)
 	lng = models.DecimalField(max_digits=15, decimal_places=6, null=True, blank=True)
@@ -319,6 +317,18 @@ class Branch(BaseModel):
 			unicode_string.append(string_parts)
 
 		return "; ".join(unicode_string)
+
+	def create_default_schedule(self):
+		scheduleWD = Schedule(type=Schedule.WD,
+									time_from="09:00",
+									time_to="18:00")
+		scheduleSD = Schedule(type=Schedule.SD,
+									time_from=None,
+									time_to=None)
+		scheduleWD.save()
+		scheduleSD.save()
+		
+		self.schedule.add(scheduleWD, scheduleSD)
 
 
 
