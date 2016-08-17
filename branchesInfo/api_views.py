@@ -48,6 +48,3 @@ class InitialStateViewSet(viewsets.ViewSet):
 class BranchesInfoViewSet(viewsets.ModelViewSet):
 	queryset = Branch.objects.all()
 	serializer_class = BranchInfoSerializer
-
-
-	

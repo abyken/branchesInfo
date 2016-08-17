@@ -213,6 +213,11 @@ class Branch(BaseModel):
 	class Meta:
 		verbose_name_plural="Branches"
 
+	def __unicode__(self):
+		number = "#" + str(self.branchNumber) if self.branchNumber else u""
+
+		return self.get_type_cap() + u" " + number
+
 	def get_service_ids(self):
 		return [service.id for service in self.services.all()]
 

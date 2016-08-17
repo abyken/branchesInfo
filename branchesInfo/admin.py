@@ -1,8 +1,8 @@
+import json
 from django.contrib import admin
 from .models import *
-# Register your models here.
-
-
+from .serializers import *
+from django.http import HttpResponse
 
 @admin.register(Break)
 class BreakAdmmin(admin.ModelAdmin):
@@ -26,7 +26,16 @@ class DayAdmmin(admin.ModelAdmin):
 class ScheduleAdmmin(admin.ModelAdmin):
 	pass
 
+def download_json(modeladmin, request, queryset):
+	serializer = BranchInfoSerializer(queryset, many=True)
+
+	response = HttpResponse(json.dumps(serializer.data), content_type='application/json')
+	response['Content-Disposition'] = 'attachment; filename="branches.json"'
+
+	return response
+
+download_json.short_description = u"Download JSON of selected Branches"
 
 @admin.register(Branch)
-class BranchAdmmin(admin.ModelAdmin):
-	pass
+class BranchAdmin(admin.ModelAdmin):
+	actions = [download_json]
