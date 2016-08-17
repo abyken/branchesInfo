@@ -1,12 +1,17 @@
-from rest_framework import viewsets, response, filters, status
+from rest_framework import viewsets, response, filters, status, pagination
 from rest_framework.decorators import list_route, detail_route
 from .models import *
 from .serializers import *
 from .filters import *
 
+class BasePagination(pagination.PageNumberPagination):
+	page_size = 20
+ 	page_size_query_param = 'count'
+
 class BranchViewSet(viewsets.ModelViewSet):
 	queryset = Branch.objects.all()
 	serializer_class = BranchSerializer
+	pagination_class = BasePagination
 
 	def get_queryset(self):
 		queryset = super(self.__class__, self).get_queryset()

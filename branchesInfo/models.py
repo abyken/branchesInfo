@@ -121,12 +121,7 @@ class BranchManager(models.Manager):
 		data['branchBreak'] = Break.create_default()
 
 		branch = Branch.objects.create(**data)
-		branch.create_default_schedule()
-
-		for day in Day.objects.all():
-			if day.name not in [Day.SAT, Day.SUN]:
-				scheduleWD.days.add(day)
-		
+		branch.create_default_schedule()	
 		return branch
 
 	def update_branch(self, instance, **data):
@@ -296,7 +291,7 @@ class Branch(BaseModel):
 		working_days = []
 
 		for schedule in self.schedule.all():
-			if schedule.days.count() == 0:
+			if not schedule.days.count():
 				continue
 
 			days = list(schedule.days.all())
@@ -327,6 +322,10 @@ class Branch(BaseModel):
 									time_to=None)
 		scheduleWD.save()
 		scheduleSD.save()
+
+		for day in Day.objects.all():
+			if day.name not in [Day.SAT, Day.SUN]:
+				scheduleWD.days.add(day)
 		
 		self.schedule.add(scheduleWD, scheduleSD)
 

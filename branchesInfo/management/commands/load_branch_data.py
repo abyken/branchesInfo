@@ -70,7 +70,7 @@ class Command(BaseCommand):
 
 		def parse_services(branch, value):
 			
-			def get_or_create_service(value):
+			def get_or_create_service(service_name):
 				service, created = Service.objects.get_or_create(name=service_name)
 
 				if created:
@@ -81,21 +81,26 @@ class Command(BaseCommand):
 			if value[-1] == u".":
 				value = value[:-1]		
 
+
 			service_names = value.split(",")
 			for service_name in service_names:
+				service_name = service_name.strip()
+				if not service_name:
+					continue
+
 				if u"Кредиты" in service_name:
 					parts = service_name.split(":")
-					types = parts[1].split(u"и")
+					types = parts[1].split(u" и ")
 
 					for _type in types:
-						branch.services.add(get_or_create_service(u"Кредиты " + _type.strip()))
+						branch.services.add(get_or_create_service(u"Кредиты: " + _type.strip()))
 
 				elif u"Переводы" in service_name:
 					parts = service_name.split(":")
 					types = parts[1].split(u"/")
 
 					for _type in types:
-						branch.services.add(get_or_create_service(u"Переводы " + _type.strip()))
+						branch.services.add(get_or_create_service(u"Переводы: " + _type.strip()))
 						
 				else:
 					branch.services.add(get_or_create_service(service_name))

@@ -5,7 +5,7 @@ app.BranchList = Backbone.Collection.extend({
 	url: '/api/v1/branches/',
 	all: [],
 	parse: function(response) {
-		response.map(function(branch, index) {
+		response.results.map(function(branch, index) {
 			branch.index = index + 1;
 			branch.currencies_verbose = this.getCurrenciesVerbose(branch.currencies);
 			branch.schedule_verbose = this.getScheduleVerbose(branch.schedule, branch.isAroundTheClock);
@@ -14,7 +14,7 @@ app.BranchList = Backbone.Collection.extend({
 			branch.currencies_list = this.getCurrenciesList(branch.currency_ids);
 			branch.services_list = this.getServicesList(branch.service_ids);	*/		
 		}.bind(this));
-		return response;
+		return response.results;
 	},
 
 	create: function(data) {
@@ -111,8 +111,9 @@ app.BranchList = Backbone.Collection.extend({
 			working_days = [];
 
 		for(var i=0; i<value.length; i++){
-			if(value[i].days.length == 0)
+			if(value[i].days.length > 0){
 				continue;
+			}
 
 			var days_interval = getIntervalString(value[i].days);
 			working_days = working_days.concat(value[i].days);
@@ -122,7 +123,6 @@ app.BranchList = Backbone.Collection.extend({
 			string_parts += time;
 			unicode_string.push(string_parts);
 			string_parts = "";
-
 		}
 
 		var days_off = _.difference(days_list, working_days)

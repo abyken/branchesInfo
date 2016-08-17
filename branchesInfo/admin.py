@@ -27,7 +27,8 @@ class ScheduleAdmmin(admin.ModelAdmin):
 	pass
 
 def download_json(modeladmin, request, queryset):
-	serializer = BranchInfoSerializer(queryset, many=True)
+	qs = Branch.objects.all()
+	serializer = BranchInfoSerializer(qs, many=True)
 
 	response = HttpResponse(json.dumps(serializer.data), content_type='application/json')
 	response['Content-Disposition'] = 'attachment; filename="branches.json"'
