@@ -60,11 +60,11 @@ class BranchSerializer(serializers.ModelSerializer):
 		exclude = ('date_created', 'date_edited', 'isEmpty')
 
 	branchBreak = BreakSerializer(required=False)
-	currencies = CurrencySerializer(required=False, many=True)
-	services = ServiceSerializer(required=False, many=True)
 	schedule = ScheduleSerializer(required=False, many=True)
-	service_ids = serializers.ListField(source="get_service_ids", read_only=True)
-	currency_ids = serializers.ListField(source="get_currency_ids", read_only=True)
+	services = serializers.PrimaryKeyRelatedField(queryset=Service.objects.all(), many=True)
+	currencies = serializers.PrimaryKeyRelatedField(queryset=Currency.objects.all(), many=True)
+	# service_ids = serializers.ListField(source="get_service_ids")
+	# currency_ids = serializers.ListField(source="get_currency_ids")
 
 	def create(self, validated_data):
 		return Branch.objects.create_branch(**validated_data)

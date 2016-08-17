@@ -155,13 +155,11 @@ class BranchManager(models.Manager):
 
 		instance.services.clear()
 		for service in services:
-			serviceObject = Service.objects.get(id=service.get('id'))
-			instance.services.add(serviceObject)
+			instance.services.add(service)
 
 		instance.currencies.clear()
 		for currency in currencies:
-			currencyObject = Currency.objects.get(id=currency.get('id'))
-			instance.currencies.add(currencyObject)
+			instance.currencies.add(currency)
 
 		for schedule in schedules:
 			scheduleObj = Schedule.objects.get(id=schedule.get('id'))
