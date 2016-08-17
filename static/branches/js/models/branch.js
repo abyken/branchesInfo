@@ -2,7 +2,7 @@ var app = app || {};
 
 app.Branch = Backbone.Model.extend({
 	url: function() {
-		var base = "http://localhost:8001/api/v1/branches/";
+		var base = "/api/v1/branches/";
 		if(this.isNew()) return base;
 
 		return base + this.id + "/";

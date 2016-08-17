@@ -2,7 +2,7 @@ var app = app || {};
 
 app.BranchList = Backbone.Collection.extend({
 	model: app.Branch,
-	url: 'http://localhost:8001/api/v1/branches/',
+	url: '/api/v1/branches/',
 	all: [],
 	parse: function(response) {
 		response.map(function(branch, index) {
