@@ -1,0 +1,330 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" type="text/css" href="{% static 'branches/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'branches/css/index.css' %}">
+        <title>Currency App</title>
+
+    </head>
+
+
+    <body>
+
+        <section id="app">
+            <section id="content">
+                <div class="rTable">
+                    <div class="rTableHeading">
+                        <div class="rTableRow">
+                            <div class="rTableHead">№</div>
+                            <div class="rTableHead">Активность</div>
+                            <div class="rTableHead">Тип</div>
+                            <div class="rTableHead">Валюты</div>
+                            <div class="rTableHead">Cash In</div>
+                            <div class="rTableHead">Широта</div>
+                            <div class="rTableHead">Долгота</div>
+                            <div class="rTableHead">Номер</div>
+                            <div class="rTableHead">Город</div>
+                            <div class="rTableHead">Название</div>
+                            <div class="rTableHead">Адрес</div>
+                            <div class="rTableHead">Режим работы</div>
+                            <div class="rTableHead">Перерыв</div>
+                            <div class="rTableHead">Услуги</div>
+                            <div class="rTableHead">Клиенты</div>
+                            <div class="rTableHead">Доступ</div>
+                            <div class="rTableHead"><input type="button" id="add-row" value="Добавить запись"/></div>
+                        </div>
+                    </div>
+                    <div class="rTableHeading" id="search-bar"></div>
+                    <div class="rTableBody" id="branch-list"></div>
+                </div>
+            </section>
+        </section>
+
+        <script type="text/dust" id="branch-template">
+                <div class="rTableCell">{index}</div>
+                <div class="rTableCell">
+                    <input class="fieldCheckBox" type="checkbox" name="isActive" {@eq key=isActive value="true" type="boolean"} checked {/eq}>
+                </div>
+                <div class="rTableCell">
+                    <select name="type" class="model_field">
+                      <option value="branch" {@eq key=type value="branch"} selected {/eq}>Отделение</option>
+                      <option value="atm" {@eq key=type value="atm"} selected {/eq}>Банкомат</option>
+                      <option value="terminal" {@eq key=type value="terminal"} selected {/eq}>Терминал</option>
+                    </select>
+                </div>
+                {@eq key=type value="branch"}
+                    <div class="rTableCell" > - </div>
+                    <div class="rTableCell" > - </div>
+                {:else}
+                    <div class="currencies rTableCell">
+                        <label id="currencies_label">{currencies_verbose}</label>
+                        <div id="currencies">
+                            <ul class='list'>
+                                {#currency_list}
+                                    <li>
+                                        <div class="inline_input">
+                                            <input type="checkbox" class="manytomany" name="currencies__{@getModelId}{/getModelId}" value="{id}" {@eq key=selected value="true" type="boolean"} checked {/eq}>
+                                            <label for="currencies__{@getModelId}{/getModelId}"><div class="margin-left-space">{code}</div></label>
+                                        </div>
+                                    </li>
+                                {/currency_list}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="rTableCell"> 
+                        <input class="fieldCheckBox" type="checkbox" name="isCashIn" {@eq key=isCashIn value="true" type="boolean"} checked {/eq}>
+                    </div>
+                {/eq}
+                <div class="field rTableCell">
+                    <label>{lat}</label>
+                    <input type="number" step="0.000001" class="edit" name="lat" value="{lat}">
+                </div>
+                <div class="field rTableCell">
+                    <label>{lng}</label>
+                    <input type="number" step="0.000001" class="edit" name="lng" value="{lng}">
+                </div>
+                <div class="field rTableCell">
+                    <label>{branchNumber}</label>
+                    <input type="number" class="edit" name="branchNumber" value="{branchNumber}">
+                </div>
+                <div class="field rTableCell">
+                    <label>{city}</label>
+                    <input type="text" class="edit" name="city" value="{city}">
+                </div>
+                <div class="field rTableCell">
+                    <label>{name}</label>
+                    <input type="text" class="edit" name="name" value="{name}">
+                </div>
+                <div class="field rTableCell">
+                    <label>{address}</label>
+                    <input type="text" class="edit" name="address" value="{address}">
+                </div>
+                <div class="schedule rTableCell"> 
+                    <label id="schedule_label">{schedule_verbose}</label>
+                    <div id="schedule">
+                        {#schedule}
+                            {@ne key=type value="DO"}   
+                                <div class="week_schedule">
+                                    <b class="margin-bottom1">{type_display}:</b><br />
+                                    <ul class="checkbox-grid">
+                                        <li>
+                                            <label for="{type}_days_{@getModelId}{/getModelId}">Пн</label>
+                                            <input type="checkbox" class="schedulecb" name="{type}_days_{@getModelId}{/getModelId}" value='MON' {@isDayChecked day="MON"} checked {/isDayChecked}> 
+                                        </li>
+                                        <li>
+                                            <label for="{type}_days_{@getModelId}{/getModelId}">Вт</label>
+                                            <input type="checkbox" class="schedulecb" name="{type}_days_{@getModelId}{/getModelId}" value='TUE' {@isDayChecked day="TUE"} checked {/isDayChecked}> 
+                                        </li>
+                                        <li>
+                                            <label for="{type}_days_{@getModelId}{/getModelId}">Ср</label>
+                                            <input type="checkbox" class="schedulecb" name="{type}_days_{@getModelId}{/getModelId}" value='WED' {@isDayChecked day="WED"} checked {/isDayChecked}> 
+                                        </li>
+                                        <li>
+                                            <label for="{type}_days_{@getModelId}{/getModelId}">Чт</label>
+                                            <input type="checkbox" class="schedulecb" name="{type}_days_{@getModelId}{/getModelId}" value='THU' {@isDayChecked day="THU"} checked {/isDayChecked}> 
+                                        </li>
+                                        <li>
+                                            <label for="{type}_days_{@getModelId}{/getModelId}">Пт</label>
+                                            <input type="checkbox" class="schedulecb" name="{type}_days_{@getModelId}{/getModelId}" value='FRI' {@isDayChecked day="FRI"} checked {/isDayChecked}> 
+                                        </li>
+                                        <li>
+                                            <label for="{type}_days_{@getModelId}{/getModelId}">Сб</label>
+                                            <input type="checkbox" class="schedulecb" name="{type}_days_{@getModelId}{/getModelId}" value='SAT' {@isDayChecked day="SAT"} checked {/isDayChecked}> 
+                                        </li>
+                                        <li>
+                                            <label for="{type}_days_{@getModelId}{/getModelId}">Вс</label>
+                                            <input type="checkbox" class="schedulecb" name="{type}_days_{@getModelId}{/getModelId}" value='SUN' {@isDayChecked day="SUN"} checked {/isDayChecked}> 
+                                        </li>
+                                    </ul>
+
+                                    <div class="inline_input"><label for="{type}_time_from">С: </label><input type="time" class="scheduletm" name="{type}_time_from" value="{time_from}"></div>
+                                    <div class="inline_input"><label for="{type}_time_to">До: </label><input type="time" class="scheduletm" name="{type}_time_to" value="{time_to}"></div>
+                                </div>
+                            {/ne}
+                        {/schedule}
+                        <div class="inline_input">
+                            <input class="fieldCheckBox" type="checkbox" name="isAroundTheClock" {@eq key=isAroundTheClock value="true" type="boolean"} checked {/eq}>
+                            <label for="isAroundTheClock"><div class="margin-left-space"><b>Круглосуточно</b></div></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="break rTableCell">
+                    <label id="break_label">{break_verbose}</label>
+                    <div id="break" class="branch_break">
+                        {#branchBreak}
+                            <div class="inline_input"><label for="time_from">С: </label><input type="time" class="breaktm" name="time_from" value="{time_from}"></div>
+                            <div class="inline_input"><label for="time_to">До: </label><input type="time" class="breaktm" name="time_to" value="{time_to}"></div>
+                            <div class="inline_input">
+                                <input type="checkbox" class="breakcb" name="isWithoutBreak" {@eq key=isWithoutBreak value="true" type="boolean"} checked {/eq}>
+                                <label for="isWithoutBreak"><div class="margin-left-space"><b>Без перерыва</b></div></label>
+                            </div>
+                        {/branchBreak}
+                    </div>
+                </div>
+                {@eq key=type value="branch"}
+                    <div class="services rTableCell">
+                        <label id="services_label">{services_verbose}</label>
+                        <div id="services">
+                            <ul class='list'>
+                                {#service_list}
+                                    <li>
+                                        <div class="inline_input">
+                                            <input type="checkbox" class="manytomany" name="services__{@getModelId}{/getModelId}" value="{id}" {@eq key=selected value="true" type="boolean"} checked {/eq}> 
+                                            <label for="services__{@getModelId}{/getModelId}"><div class="margin-left-space">{name}</div></label>
+                                        </div>
+                                    </li>
+                                {/service_list}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="rTableCell">
+                        <select name="clients" class="model_field">
+                            <option value="INDIVIDUAL" {@eq key=clients value="INDIVIDUAL"} selected {/eq}>Физические лица</option>
+                            <option value="CORPORATION" {@eq key=clients value="CORPORATION"} selected {/eq}>Юридические лица</option>
+                            <option value="BOTH" {@eq key=clients value="BOTH"} selected {/eq}>Физические/Юридические лица</option>
+                        </select>
+                    </div>
+                    <div class="rTableCell" > - </div>
+                {:else}
+                    <div class="rTableCell" > - </div>
+                    <div class="rTableCell" > - </div>
+                    <div class="field rTableCell">
+                        <select name="access" class="model_field">
+                          <option value="LIMITED" {@eq key=access value="LIMITED"} selected {/eq}>Пропускная система</option>
+                          <option value="UNLIMITED" {@eq key=access value="UNLIMITED"} selected {/eq}>Неограничен</option>
+                        </select>
+                    </div>
+                {/eq}
+                
+                <div class="rTableCell">
+                    <input type="button" class="save" value="Сохранить"/>
+                    <input type="button" class="destroy" value="Удалить"/>
+                </div>
+        </script>
+
+        <script type="text/dust" id="search-template">
+            {@eq key=isFetchAll value="true" type="boolean"}
+                <div class="rTableHead">
+                    <input class="fieldCheckBox" type="checkbox" name="isFetchAll" {@eq key=isFetchAll value="true" type="boolean"} checked {/eq}>Fetch all</input>
+                </div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+            {:else}
+                <div class="rTableHead">
+                    <input class="fieldCheckBox" type="checkbox" name="isFetchAll" {@eq key=isFetchAll value="true" type="boolean"} checked {/eq}>Fetch all</input>
+                </div>
+                <div class="rTableHead">
+                    <input class="fieldCheckBox" type="checkbox" name="isActive" {@eq key=isActive value="true" type="boolean"} checked {/eq} />
+                </div>
+                <div class="rTableHead">
+                    <select name="type">
+                      <option value="-1">Выберите</option>
+                      <option value="branch" {@eq key=type value="branch"} selected {/eq}>Отделение</option>
+                      <option value="atm" {@eq key=type value="atm"} selected {/eq}>Банкомат</option>
+                      <option value="atm24" {@eq key=type value="atm24"} selected {/eq}>Банкомат 24</option>
+                      <option value="terminal" {@eq key=type value="terminal"} selected {/eq}>Терминал</option>
+                    </select>
+                </div>
+                {@eq key=type value="-1"}
+                    <div class="rTableHead" ></div>
+                    <div class="rTableHead" ></div>
+                {:else}
+                    {@eq key=type value="branch"}
+                        <div class="rTableHead" ></div>
+                        <div class="rTableHead" ></div>
+                    {:else}
+                        <div class="rTableHead">
+                            <select name="currencies">
+                                <option value="-1">Выберите</option>
+                                {#currencies}
+                                    <option value="{id}" {@eq key=selected value="true" type="boolean"} selected {/eq}>{code}</option>
+                                {/currencies}
+                            </select>
+                        </div>
+                        <div class="rTableHead"> 
+                            <input class="fieldCheckBox" type="checkbox" name="isCashIn" {@eq key=isCashIn value="true" type="boolean"} checked {/eq}>
+                        </div>
+                    {/eq}
+                {/eq}
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead">
+                    <input type="number" class="field" name="branchNumber" value="{branchNumber}">
+                </div>
+                <div class="rTableHead">
+                    <input type="text" class="field" name="city" value="{city}">
+                </div>
+                <div class="rTableHead">
+                    <input type="text" class="field" name="name" value="{name}">
+                </div>
+                <div class="rTableHead">
+                    <input type="text" class="field" name="address" value="{address}">
+                </div>
+                <div class="rTableHead"></div>
+                <div class="rTableHead"></div>
+                {@eq key=type value="branch"}
+                    <div class="rTableHead">
+                        <select name="services">
+                            {#services}
+                                <option value="{id}" {@eq key=selected value="true" type="boolean"} selected {/eq}>{name}</option>
+                            {/services}
+                        </select>
+                    </div>
+                    <div class="rTableHead">
+                        <select name="clients" class="model_field">
+                            <option value="INDIVIDUAL" {@eq key=clients value="INDIVIDUAL"} selected {/eq}>Физические лица</option>
+                            <option value="CORPORATION" {@eq key=clients value="CORPORATION"} selected {/eq}>Юридические лица</option>
+                            <option value="BOTH" {@eq key=clients value="BOTH"} selected {/eq}>Физические/Юридические лица</option>
+                        </select>
+                    </div>
+                    <div class="rTableHead" ></div>
+                {:else}
+                    <div class="rTableHead" ></div>
+                    <div class="rTableHead" ></div>
+                    <div class="rTableHead"></div>
+                {/eq}
+            {/eq}   
+                <div class="rTableHead">
+                    <input type="button" class="search" value="Поиск"/>
+                </div>
+        </script>
+
+        <script type="text/javascript" src="{% static 'branches/js/libs/cordova.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/libs/jquery-1.7.2.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/libs/underscope-min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/libs/backbone-min.js' %}"></script>
+        <!-- <script type="text/javascript" src="{% static 'branches/js/libs/backbone.localStorage-min.js' %}"></script>  -->
+        <script type="text/javascript" src="{% static 'branches/js/libs/dust-full.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/libs/dust-helpers.min.js' %}"></script>
+        <!-- <script type="text/javascript" src="{% static 'branches/js/libs/bootstrap.min.js' %}"></script> -->
+        <script type="text/javascript" src="{% static 'branches/js/sync/csrf_sync.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/models/service.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/models/currency.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/models/search.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/models/branch.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/collections/branches.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/collections/currencies.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/collections/services.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/views/search-view.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/views/branch-view.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/views/app-view.js' %}"></script>
+        <script type="text/javascript" src="{% static 'branches/js/index.js' %}"></script>
+    </body>
+</html>
