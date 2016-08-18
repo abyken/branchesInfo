@@ -28,7 +28,9 @@ app.AppView = Backbone.View.extend({
 	},
 	addAll: function() {
 		app.branchList.each(this.addOne, this);
-		this.showLoadMore();
+		if(app.branchList.total > 15){
+			this.showLoadMore();
+		}
 	},
 	addSearchBar: function() {
 		this.$('#search-bar').html('');
@@ -47,14 +49,18 @@ app.AppView = Backbone.View.extend({
 	fetchByPage: function(event) {
 		this.hideLoadMore();
 		if($(window).scrollTop() + $(window).innerHeight() >= window.document.documentElement.scrollHeight) {
-			this.showSpinner();
-            app.branchList.fetch({url: app.branchList.next, remove: false, success: this.hideSpinner});
+			if(app.branchList.next){
+				this.showSpinner();
+            	app.branchList.fetch({url: app.branchList.next, remove: false, success: this.hideSpinner});
+			}
         }
 	},
 
 	fetchNext: function() {
-		this.showSpinner();
-        app.branchList.fetch({url: app.branchList.next, remove: false, success: this.hideSpinner});
+		if(app.branchList.next){
+			this.showSpinner();
+        	app.branchList.fetch({url: app.branchList.next, remove: false, success: this.hideSpinner});
+		}
 	},
 
 	hideSpinner: function() {

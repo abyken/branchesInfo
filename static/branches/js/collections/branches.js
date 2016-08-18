@@ -6,11 +6,13 @@ app.BranchList = Backbone.Collection.extend({
 	all: [],
 	next: '/api/v1/branches/',
 	page: 0,
+	total: 0,
 	parse: function(response) {
 		if(this.next == response.next)
 			return [];
 		this.page++;
 		this.next = response.next;
+		this.total = response.count;
 		response.results.map(function(branch, index) {
 			branch.index = index + 1 + (this.page - 1) * 15;
 			branch.currencies_verbose = this.getCurrenciesVerbose(branch.currencies);
