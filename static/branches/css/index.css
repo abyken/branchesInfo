@@ -35,16 +35,24 @@ input[type="text"], input[type="number"], input[type="time"] {
 	display: none;
 }
 
+#content {
+	overflow: scroll;
+}
+.info {
+	text-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	font-weight: bold;
+}
 .rTable {       display: table;     width: 100%; } 
 .rTableRow {     display: table-row; } 
 .rTableCell, .rTableHead {    display: table-cell;    padding: 3px 10px;      border: 1px solid #999999; width: } 
 .rTableSearch {      display: table-search-group;    font-weight: bold;      background-color: #ddd; } 
 .rTableHeading {       display: table-header-group;    background-color: #ddd;     font-weight: bold; } 
-.rTableFoot {      display: table-footer-group;    font-weight: bold;      background-color: #ddd; } 
-.rTableBody {     display: table-row-group; }
-
+.rTableFoot {      display: table-footer-group;    font-weight: bold;      background-color: #ddd;} 
+.rTableBody {     display: table-row-group; overflow: scroll; }
 .rowEdited {
-	/*background: red;*/
+	background: rgba(255, 0, 0, .3);;
 }
 
 .list {
@@ -108,3 +116,50 @@ input[type="text"], input[type="number"], input[type="time"] {
 .branch_break {
 	max-width: 140px;
 }
+
+.loader {
+  margin: 15px auto;
+  font-size: 3px;
+  position: relative;
+  text-indent: -9999em;
+  border-top: 1.1em solid rgba(255, 255, 255, 0.2);
+  border-right: 1.1em solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
+  border-left: 1.1em solid #999999;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 1.1s infinite linear;
+  animation: load8 1.1s infinite linear;
+}
+.loader,
+.loader:after {
+  border-radius: 50%;
+  width: 10em;
+  height: 10em;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.cleaner   {
+	height: 100px;
+}
+

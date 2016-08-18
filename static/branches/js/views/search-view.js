@@ -50,6 +50,16 @@ app.SearchView = Backbone.View.extend({
 	},
 
 	search: function(event) {
-		app.branchList.search(this.model.toJSON());
-	}
+		$('#branch-list').html('');
+		this.showSpinner();
+		app.branchList.search(this.model.toJSON(), this.showSpinner);
+	},
+
+	hideSpinner: function() {
+		$('#spinner').hide();
+	},
+
+	showSpinner: function() {
+		$('#spinner').show();
+	},
 })

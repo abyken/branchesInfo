@@ -5,7 +5,7 @@ from .serializers import *
 from .filters import *
 
 class BasePagination(pagination.PageNumberPagination):
-	page_size = 20
+	page_size = 15
  	page_size_query_param = 'count'
 
 class BranchViewSet(viewsets.ModelViewSet):

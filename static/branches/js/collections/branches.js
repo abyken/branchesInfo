@@ -4,15 +4,19 @@ app.BranchList = Backbone.Collection.extend({
 	model: app.Branch,
 	url: '/api/v1/branches/',
 	all: [],
+	next: '/api/v1/branches/',
+	page: 0,
 	parse: function(response) {
+		if(this.next == response.next)
+			return [];
+		this.page++;
+		this.next = response.next;
 		response.results.map(function(branch, index) {
-			branch.index = index + 1;
+			branch.index = index + 1 + (this.page - 1) * 15;
 			branch.currencies_verbose = this.getCurrenciesVerbose(branch.currencies);
-			branch.schedule_verbose = this.getScheduleVerbose(branch.schedule, branch.isAroundTheClock);
+			branch.schedule_verbose = this.getScheduleVerbose(branch.schedule, branch.isAroundTheClock, branch.isLimitedAccess);
 			branch.break_verbose = this.getBreakVerbose(branch.branchBreak);
-			branch.services_verbose = this.getServicesVerbose(branch.services);/*
-			branch.currencies_list = this.getCurrenciesList(branch.currency_ids);
-			branch.services_list = this.getServicesList(branch.service_ids);	*/		
+			branch.services_verbose = this.getServicesVerbose(branch.services);
 		}.bind(this));
 		return response.results;
 	},
@@ -20,13 +24,8 @@ app.BranchList = Backbone.Collection.extend({
 	create: function(data) {
 		Backbone.Collection.prototype.create.call(this, data, {
 			success: function(response) {
-				
-				var model = this.at(this.length - 1),
-					index = 1;
-				if(this.length > 1)
-					index = this.at(this.length - 2).get("index") + 1;
-				
-				model.set("index", index);
+				var model = this.at(this.length - 1);
+				model.set("index", "Новая запись");
 			}.bind(this)
 		});
 	},
@@ -37,7 +36,8 @@ app.BranchList = Backbone.Collection.extend({
 		})
 	},
 
-	search: function(attributes) {
+	search: function(attributes, success) {
+		this.page = 0;
 		var query = "", first = true, data = {};
 		if(attributes.isFetchAll === true){
 			this.fetch()
@@ -62,7 +62,7 @@ app.BranchList = Backbone.Collection.extend({
 			query += "&" + key + "=" + attributes[key];
 		}
 
-		this.fetch({data: data});
+		this.fetch({data: data, success: success});
 	},
 
 	getCurrenciesVerbose: function(ids) {
@@ -73,7 +73,7 @@ app.BranchList = Backbone.Collection.extend({
 		return vals_array.join(", ");
 	},
 
-	getScheduleVerbose: function(value, isAroundTheClock) {
+	getScheduleVerbose: function(value, isAroundTheClock, isLimitedAccess) {
 		var days_list = ["MON","TUE","WED","THU","FRI","SAT","SUN"];
 		function getIntervalString(days) {
 			var days_short = {
@@ -105,16 +105,17 @@ app.BranchList = Backbone.Collection.extend({
 
 		if(isAroundTheClock)
 			return 'Круглосуточно'
+		else if(isLimitedAccess)
+			return 'Пропускная система'
 
 		var unicode_string = [], 
 			string_parts = "",
 			working_days = [];
-
 		for(var i=0; i<value.length; i++){
-			if(value[i].days.length > 0){
+
+			if(value[i].days.length === 0){
 				continue;
 			}
-
 			var days_interval = getIntervalString(value[i].days);
 			working_days = working_days.concat(value[i].days);
 
@@ -132,7 +133,6 @@ app.BranchList = Backbone.Collection.extend({
 			string_parts = days_interval + ": выходной";
 			unicode_string.push(string_parts);
 		}
-
 		return unicode_string.join("; ");
 	},
 

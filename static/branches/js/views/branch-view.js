@@ -279,7 +279,10 @@ app.BranchView = Backbone.View.extend({
 
 	destroy: function(event) {
 		this.model.destroy({
-								success: function(model) { app.branchList.resetIndexes(); this.remove() }.bind(this), 
+								success: function(model) { 
+										app.branchList.resetIndexes(); 
+										this.remove() 
+									}.bind(this), 
 								error: function(err) { console.log("err", err) }.bind(this) 
 							});
 	},

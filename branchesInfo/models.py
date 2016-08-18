@@ -205,6 +205,7 @@ class Branch(BaseModel):
 
 	class Meta:
 		verbose_name_plural="Branches"
+		ordering=("-date_created",)
 
 	def __unicode__(self):
 		number = "#" + str(self.branchNumber) if self.branchNumber else u""

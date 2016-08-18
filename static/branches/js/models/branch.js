@@ -24,10 +24,13 @@ app.Branch = Backbone.Model.extend({
 					this.set('break_verbose', app.branchList.getBreakVerbose(data[key]));
 					break;
 				case "schedule":
-					this.set('schedule_verbose', app.branchList.getScheduleVerbose(data[key], this.get('isAroundTheClock')));
+					this.set('schedule_verbose', app.branchList.getScheduleVerbose(data[key], this.get('isAroundTheClock'), this.get('isLimitedAccess')));
 					break;
 				case "isAroundTheClock":
-					this.set('schedule_verbose', app.branchList.getScheduleVerbose(this.get('schedule'), data[key]));
+					this.set('schedule_verbose', app.branchList.getScheduleVerbose(this.get('schedule'), data[key], this.get('isLimitedAccess')));
+					break;
+				case "isLimitedAccess":
+					this.set('schedule_verbose', app.branchList.getScheduleVerbose(this.get('schedule'), this.get('isLimitedAccess'), data[key]));
 					break;
 
 				default:

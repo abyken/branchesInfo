@@ -15,6 +15,6 @@ $(function() {
         }});
         
     };
-    
-    document.addEventListener('deviceready', fetchInitialState, false);
+
+    fetchInitialState();
 });

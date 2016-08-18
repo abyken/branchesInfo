@@ -14,10 +14,11 @@
 
     <body>
 
-        <section id="app">
+        <section id="app">       
             <section id="content">
+                <div class="info">Для редактирования текстового поля дважды кликните по ячейке.</div>
                 <div class="rTable">
-                    <div class="rTableHeading">
+                    <div class="rTableHeading" id="header">
                         <div class="rTableRow">
                             <div class="rTableHead">№</div>
                             <div class="rTableHead">Активность</div>
@@ -28,7 +29,6 @@
                             <div class="rTableHead">Долгота</div>
                             <div class="rTableHead">Номер</div>
                             <div class="rTableHead">Город</div>
-                            <div class="rTableHead">Название</div>
                             <div class="rTableHead">Адрес</div>
                             <div class="rTableHead">Режим работы</div>
                             <div class="rTableHead">Перерыв</div>
@@ -41,6 +41,8 @@
                     <div class="rTableHeading" id="search-bar"></div>
                     <div class="rTableBody" id="branch-list"></div>
                 </div>
+                <div class="loader" id="spinner">Loading...</div>
+                <div class="cleaner" />
             </section>
         </section>
 
@@ -96,10 +98,6 @@
                     <input type="text" class="edit" name="city" value="{city}">
                 </div>
                 <div class="field rTableCell">
-                    <label>{name}</label>
-                    <input type="text" class="edit" name="name" value="{name}">
-                </div>
-                <div class="field rTableCell">
                     <label>{address}</label>
                     <input type="text" class="edit" name="address" value="{address}">
                 </div>
@@ -149,6 +147,10 @@
                         <div class="inline_input">
                             <input class="fieldCheckBox" type="checkbox" name="isAroundTheClock" {@eq key=isAroundTheClock value="true" type="boolean"} checked {/eq}>
                             <label for="isAroundTheClock"><div class="margin-left-space"><b>Круглосуточно</b></div></label>
+                        </div>
+                        <div class="inline_input">
+                            <input class="fieldCheckBox" type="checkbox" name="isLimitedAccess" {@eq key=isLimitedAccess value="true" type="boolean"} checked {/eq}>
+                            <label for="isLimitedAccess"><div class="margin-left-space"><b>Пропускная система</b></div></label>
                         </div>
                     </div>
                 </div>
@@ -225,7 +227,6 @@
                 <div class="rTableHead"></div>
                 <div class="rTableHead"></div>
                 <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
             {:else}
                 <div class="rTableHead">
                     <input class="fieldCheckBox" type="checkbox" name="isFetchAll" {@eq key=isFetchAll value="true" type="boolean"} checked {/eq}>Fetch all</input>
@@ -272,9 +273,6 @@
                     <input type="text" class="field" name="city" value="{city}">
                 </div>
                 <div class="rTableHead">
-                    <input type="text" class="field" name="name" value="{name}">
-                </div>
-                <div class="rTableHead">
                     <input type="text" class="field" name="address" value="{address}">
                 </div>
                 <div class="rTableHead"></div>
@@ -282,6 +280,7 @@
                 {@eq key=type value="branch"}
                     <div class="rTableHead">
                         <select name="services">
+                            <option value="-1">Выберите</option>
                             {#services}
                                 <option value="{id}" {@eq key=selected value="true" type="boolean"} selected {/eq}>{name}</option>
                             {/services}
@@ -289,6 +288,7 @@
                     </div>
                     <div class="rTableHead">
                         <select name="clients" class="model_field">
+                            <option value="-1">Выберите</option>
                             <option value="INDIVIDUAL" {@eq key=clients value="INDIVIDUAL"} selected {/eq}>Физические лица</option>
                             <option value="CORPORATION" {@eq key=clients value="CORPORATION"} selected {/eq}>Юридические лица</option>
                             <option value="BOTH" {@eq key=clients value="BOTH"} selected {/eq}>Физические/Юридические лица</option>
@@ -306,7 +306,6 @@
                 </div>
         </script>
 
-        <script type="text/javascript" src="{% static 'branches/js/libs/cordova.js' %}"></script>
         <script type="text/javascript" src="{% static 'branches/js/libs/jquery-1.7.2.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'branches/js/libs/underscope-min.js' %}"></script>
         <script type="text/javascript" src="{% static 'branches/js/libs/backbone-min.js' %}"></script>
