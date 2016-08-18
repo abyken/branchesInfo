@@ -28,7 +28,9 @@ app.SearchView = Backbone.View.extend({
 		'click input:checkbox': 'onFieldChecked',
 		'blur .field': 'onFieldChanged',
 		'change select': 'onOptionSelected',
-		'click .search': 'search'
+		'click .search': 'search',
+		'click .reset-filters': 'resetFilters',
+		'click .fetch-all': 'fetchAll'
 	},
 
 	onFieldChecked: function(event) {
@@ -51,8 +53,22 @@ app.SearchView = Backbone.View.extend({
 
 	search: function(event) {
 		$('#branch-list').html('');
+		this.hideLoadMore();
 		this.showSpinner();
-		app.branchList.search(this.model.toJSON(), this.showSpinner);
+		app.branchList.search(this.model.toJSON(), function() {this.hideSpinner(); this.showLoadMore()}.bind(this));
+	},
+
+	resetFilters: function(event) {
+		this.model.clear();
+		this.model.set('type', "-1");
+	},
+
+	fetchAll: function(event) {
+		$('#branch-list').html('');
+		this.resetFilters();
+		this.hideLoadMore();
+		this.showSpinner();
+		app.branchList.search({}, function() {this.hideSpinner(); this.showLoadMore()}.bind(this));
 	},
 
 	hideSpinner: function() {
@@ -62,4 +78,13 @@ app.SearchView = Backbone.View.extend({
 	showSpinner: function() {
 		$('#spinner').show();
 	},
+
+	hideLoadMore: function() {
+		$('#load_more').hide();
+	},
+
+	showLoadMore: function() {
+		if(app.branchList.total > 15)
+			$('#load_more').show();
+	}
 })

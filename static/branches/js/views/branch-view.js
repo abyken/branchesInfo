@@ -158,8 +158,7 @@ app.BranchView = Backbone.View.extend({
 			days.push(item.value);
 		});
 
-		this.model.setSchedule(name.substring(0, 2), "days", days);
-		this.setRowEdited(true);
+		this.model.setSchedule(name.substring(0, 2), "days", days, this.setRowEdited.bind(this));
 	},
 
 	onScheduleTimeChanged: function(event) {
@@ -167,35 +166,31 @@ app.BranchView = Backbone.View.extend({
 			name = event.target.name.substring(3),
 			value = event.target.value;
 
-		this.model.setSchedule(schedule_type, name, value);
+		this.model.setSchedule(schedule_type, name, value, this.setRowEdited.bind(this));
 	},
 
 	onBranchBreakChecked: function(event) {
 		var branchBreak = this.model.get('branchBreak');
 		branchBreak[event.target.name] = event.target.checked;
-		this.model.update({'branchBreak': branchBreak});
-		this.setRowEdited(true);
+		this.model.update({'branchBreak': branchBreak}, this.setRowEdited.bind(this));
 	},
 
 	onBreakTimeChanged: function(event) {
 		var branchBreak = this.model.get('branchBreak');
 		branchBreak[event.target.name] = event.target.value;
-		this.model.update({'branchBreak': branchBreak});
-		this.setRowEdited(true);
+		this.model.update({'branchBreak': branchBreak}, this.setRowEdited.bind(this));
 	},
 
 	onChecked: function(event) {
 		var data = {};
 		data[event.target.name] = !this.model.get(event.target.name);
-		this.model.update(data);
-		this.setRowEdited(true);
+		this.model.update(data, this.setRowEdited.bind(this));
 	},
 
 	onModelFieldSelected: function(event) {
 		var data = {};
 		data[event.target.name] = $(event.target).find(":selected").val();
-		this.model.update(data);
-		this.setRowEdited(true);
+		this.model.update(data, this.setRowEdited.bind(this));
 	},
 
 	onManyToManySelected: function(event){
@@ -206,8 +201,7 @@ app.BranchView = Backbone.View.extend({
 			data[name].push(item.value);
 		});
 
-		this.model.update(data);
-		this.setRowEdited(true);
+		this.model.update(data, this.setRowEdited.bind(this));
 	},
 
 	updateBranch: function(event) {
@@ -223,35 +217,31 @@ app.BranchView = Backbone.View.extend({
 	    parent.removeClass('editing');
 	    var data = {};
 	    data[input_name] = value;
-	    this.model.update(data);
-	    this.setRowEdited(true);
+	    this.model.update(data, this.setRowEdited.bind(this));
 	},
 
 	closeSchedule: function() {
 		this.schedule.hide();
 		this.label.show();
-	    this.setRowEdited(true);
 	},
 
 	closeBreak: function() {
 		this.branchBreak.hide();
 		this.break_label.show();
-	    this.setRowEdited(true);
 	},
 
 	closeCurrencies: function() {
 		this.currencies.hide();
 		this.currencies_label.show();
-	    this.setRowEdited(true);
 	},
 
 	closeServices: function() {
 		this.services.hide();
 		this.services_label.show();
-	    this.setRowEdited(true);
 	},
 
 	closeAll: function(event) {
+
 		if(this.schedule && this.label)
 			if(!this.schedule.parent().is(event.target) && this.schedule.parent().has(event.target).length === 0){
 				this.closeSchedule();
@@ -273,8 +263,9 @@ app.BranchView = Backbone.View.extend({
 			}
 				
 		if(this.input)
-			if (!this.input.parent().is(event.target) && this.input.parent().has(event.target).length === 0) 
+			if (!this.input.parent().is(event.target) && this.input.parent().has(event.target).length === 0) {
 				this.close();
+			}
 	},
 
 	destroy: function(event) {

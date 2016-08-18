@@ -8,15 +8,16 @@ app.BranchList = Backbone.Collection.extend({
 	page: 0,
 	total: 0,
 	parse: function(response) {
-		if(this.next == response.next)
+		if(this.next == response.next && this.page != 0)
 			return [];
+
 		this.page++;
 		this.next = response.next;
 		this.total = response.count;
 		response.results.map(function(branch, index) {
 			branch.index = index + 1 + (this.page - 1) * 15;
 			branch.currencies_verbose = this.getCurrenciesVerbose(branch.currencies);
-			branch.schedule_verbose = this.getScheduleVerbose(branch.schedule, branch.isAroundTheClock, branch.isLimitedAccess);
+			branch.schedule_verbose = this.getScheduleVerbose(branch.schedule, branch.isAroundTheClock);
 			branch.break_verbose = this.getBreakVerbose(branch.branchBreak);
 			branch.services_verbose = this.getServicesVerbose(branch.services);
 		}.bind(this));
@@ -41,16 +42,15 @@ app.BranchList = Backbone.Collection.extend({
 	search: function(attributes, success) {
 		this.page = 0;
 		var query = "", first = true, data = {};
-		if(attributes.isFetchAll === true){
-			this.fetch()
+		if(!attributes)
 			return;
-		}
 
 		for(var key in attributes) {
-			if(key === "isFetchAll" || attributes[key] === "-1" || 
+			if(attributes[key] === "-1" || 
 				(key === "currencies" && attributes["type"] === "branch") ||
 				(key === "services" && attributes["type"] !== "branch") || 
-				(key === "clients" && attributes["type"] !== "branch") )
+				(key === "clients" && attributes["type"] !== "branch") || 
+				(key === "isCashIn" && attributes["type"] === "branch"))
 				continue;
 
 			data[key] = attributes[key];
@@ -63,7 +63,6 @@ app.BranchList = Backbone.Collection.extend({
 
 			query += "&" + key + "=" + attributes[key];
 		}
-
 		this.fetch({data: data, success: success});
 	},
 
@@ -75,7 +74,7 @@ app.BranchList = Backbone.Collection.extend({
 		return vals_array.join(", ");
 	},
 
-	getScheduleVerbose: function(value, isAroundTheClock, isLimitedAccess) {
+	getScheduleVerbose: function(value, isAroundTheClock) {
 		var days_list = ["MON","TUE","WED","THU","FRI","SAT","SUN"];
 		function getIntervalString(days) {
 			var days_short = {
@@ -107,8 +106,6 @@ app.BranchList = Backbone.Collection.extend({
 
 		if(isAroundTheClock)
 			return 'Круглосуточно'
-		else if(isLimitedAccess)
-			return 'Пропускная система'
 
 		var unicode_string = [], 
 			string_parts = "",

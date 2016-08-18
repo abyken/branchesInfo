@@ -17,7 +17,7 @@
         <section id="app">       
             <section id="content">
                 <div class="info">Для редактирования текстового поля дважды кликните по ячейке.</div>
-                <div class="rTable">
+                <div class="rTable form-group">
                     <div class="rTableHeading" id="header">
                         <div class="rTableRow">
                             <div class="rTableHead">№</div>
@@ -28,6 +28,7 @@
                             <div class="rTableHead">Широта</div>
                             <div class="rTableHead">Долгота</div>
                             <div class="rTableHead">Номер</div>
+                            <div class="rTableHead">Название</div>
                             <div class="rTableHead">Город</div>
                             <div class="rTableHead">Адрес</div>
                             <div class="rTableHead">Режим работы</div>
@@ -35,7 +36,7 @@
                             <div class="rTableHead">Услуги</div>
                             <div class="rTableHead">Клиенты</div>
                             <div class="rTableHead">Доступ</div>
-                            <div class="rTableHead"><input type="button" id="add-row" value="Добавить запись"/></div>
+                            <div class="rTableHead"><input type="button" class="form-control" id="add-row" value="Добавить запись"/></div>
                         </div>
                     </div>
                     <div class="rTableHeading" id="search-bar"></div>
@@ -53,10 +54,10 @@
                     <input class="fieldCheckBox" type="checkbox" name="isActive" {@eq key=isActive value="true" type="boolean"} checked {/eq}>
                 </div>
                 <div class="rTableCell">
-                    <select name="type" class="model_field">
+                    <select name="type" class="model_field form-control">
                       <option value="branch" {@eq key=type value="branch"} selected {/eq}>Отделение</option>
                       <option value="atm" {@eq key=type value="atm"} selected {/eq}>Банкомат</option>
-                      <option value="terminal" {@eq key=type value="terminal"} selected {/eq}>Терминал</option>
+                      <option value="kiosk" {@eq key=type value="kiosk"} selected {/eq}>Терминал</option>
                     </select>
                 </div>
                 {@eq key=type value="branch"}
@@ -84,23 +85,27 @@
                 {/eq}
                 <div class="field rTableCell">
                     <label>{lat}</label>
-                    <input type="number" step="0.000001" class="edit" name="lat" value="{lat}">
+                    <input type="number" step="0.000001" class="edit form-control" name="lat" value="{lat}">
                 </div>
                 <div class="field rTableCell">
                     <label>{lng}</label>
-                    <input type="number" step="0.000001" class="edit" name="lng" value="{lng}">
+                    <input type="number" step="0.000001" class="edit form-control" name="lng" value="{lng}">
                 </div>
                 <div class="field rTableCell">
                     <label>{branchNumber}</label>
-                    <input type="number" class="edit" name="branchNumber" value="{branchNumber}">
+                    <input type="number" class="edit form-control" name="branchNumber" value="{branchNumber}">
+                </div>
+                <div class="field rTableCell">
+                    <label>{name}</label>
+                    <input type="text" class="edit form-control" name="name" value="{name}">
                 </div>
                 <div class="field rTableCell">
                     <label>{city}</label>
-                    <input type="text" class="edit" name="city" value="{city}">
+                    <input type="text" class="edit form-control" name="city" value="{city}">
                 </div>
                 <div class="field rTableCell">
                     <label>{address}</label>
-                    <input type="text" class="edit" name="address" value="{address}">
+                    <input type="text" class="edit form-control" name="address" value="{address}">
                 </div>
                 <div class="schedule rTableCell"> 
                     <label id="schedule_label">{schedule_verbose}</label>
@@ -140,8 +145,8 @@
                                         </li>
                                     </ul>
 
-                                    <div class="inline_input"><label for="{type}_time_from">С: </label><input type="time" class="scheduletm" name="{type}_time_from" value="{time_from}"></div>
-                                    <div class="inline_input"><label for="{type}_time_to">До: </label><input type="time" class="scheduletm" name="{type}_time_to" value="{time_to}"></div>
+                                    <div class="inline_input"><label for="{type}_time_from">С: </label><input type="time" class="scheduletm form-control" name="{type}_time_from" value="{time_from}"></div>
+                                    <div class="inline_input"><label for="{type}_time_to">До: </label><input type="time" class="scheduletm form-control" name="{type}_time_to" value="{time_to}"></div>
                                 </div>
                             {/ne}
                         {/schedule}
@@ -149,18 +154,14 @@
                             <input class="fieldCheckBox" type="checkbox" name="isAroundTheClock" {@eq key=isAroundTheClock value="true" type="boolean"} checked {/eq}>
                             <label for="isAroundTheClock"><div class="margin-left-space"><b>Круглосуточно</b></div></label>
                         </div>
-                        <div class="inline_input">
-                            <input class="fieldCheckBox" type="checkbox" name="isLimitedAccess" {@eq key=isLimitedAccess value="true" type="boolean"} checked {/eq}>
-                            <label for="isLimitedAccess"><div class="margin-left-space"><b>Пропускная система</b></div></label>
-                        </div>
                     </div>
                 </div>
                 <div class="break rTableCell">
                     <label id="break_label">{break_verbose}</label>
                     <div id="break" class="branch_break">
                         {#branchBreak}
-                            <div class="inline_input"><label for="time_from">С: </label><input type="time" class="breaktm" name="time_from" value="{time_from}"></div>
-                            <div class="inline_input"><label for="time_to">До: </label><input type="time" class="breaktm" name="time_to" value="{time_to}"></div>
+                            <div class="inline_input"><label for="time_from">С: </label><input type="time" class="breaktm form-control" name="time_from" value="{time_from}"></div>
+                            <div class="inline_input"><label for="time_to">До: </label><input type="time" class="breaktm form-control" name="time_to" value="{time_to}"></div>
                             <div class="inline_input">
                                 <input type="checkbox" class="breakcb" name="isWithoutBreak" {@eq key=isWithoutBreak value="true" type="boolean"} checked {/eq}>
                                 <label for="isWithoutBreak"><div class="margin-left-space"><b>Без перерыва</b></div></label>
@@ -185,7 +186,7 @@
                         </div>
                     </div>
                     <div class="rTableCell">
-                        <select name="clients" class="model_field">
+                        <select name="clients" class="model_field form-control">
                             <option value="INDIVIDUAL" {@eq key=clients value="INDIVIDUAL"} selected {/eq}>Физические лица</option>
                             <option value="CORPORATION" {@eq key=clients value="CORPORATION"} selected {/eq}>Юридические лица</option>
                             <option value="BOTH" {@eq key=clients value="BOTH"} selected {/eq}>Физические/Юридические лица</option>
@@ -196,7 +197,7 @@
                     <div class="rTableCell" > - </div>
                     <div class="rTableCell" > - </div>
                     <div class="field rTableCell">
-                        <select name="access" class="model_field">
+                        <select name="access" class="model_field form-control">
                           <option value="LIMITED" {@eq key=access value="LIMITED"} selected {/eq}>Пропускная система</option>
                           <option value="UNLIMITED" {@eq key=access value="UNLIMITED"} selected {/eq}>Неограничен</option>
                         </select>
@@ -204,107 +205,95 @@
                 {/eq}
                 
                 <div class="rTableCell">
-                    <input type="button" class="save" value="Сохранить"/>
-                    <input type="button" class="destroy" value="Удалить"/>
+                    <input type="button" class="save form-control" value="Сохранить"/>
+                    <input type="button" class="destroy button-red form-control " value="Удалить"/>
                 </div>
         </script>
 
         <script type="text/dust" id="search-template">
-            {@eq key=isFetchAll value="true" type="boolean"}
-                <div class="rTableHead">
-                    <input class="fieldCheckBox" type="checkbox" name="isFetchAll" {@eq key=isFetchAll value="true" type="boolean"} checked {/eq}>Fetch all</input>
-                </div>
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
+
+            <div class="rTableHead"></input>
+            </div>
+            <div class="rTableHead">
+            </div>
+            <div class="rTableHead">
+                <select name="type" class="form-control">
+                  <option value="-1">Выберите</option>
+                  <option value="branch" {@eq key=type value="branch"} selected {/eq}>Отделение</option>
+                  <option value="atm" {@eq key=type value="atm"} selected {/eq}>Банкомат</option>
+                  <option value="kiosk" {@eq key=type value="kiosk"} selected {/eq}>Терминал</option>
+                </select>
+            </div>
+            {@eq key=type value="-1"}
+                <div class="rTableHead" ></div>
+                <div class="rTableHead" ></div>
             {:else}
-                <div class="rTableHead">
-                    <input class="fieldCheckBox" type="checkbox" name="isFetchAll" {@eq key=isFetchAll value="true" type="boolean"} checked {/eq}>Fetch all</input>
+                {@eq key=type value="branch"}
+                    <div class="rTableHead" ></div>
+                    <div class="rTableHead" ></div>
+                {:else}
+                    <div class="rTableHead">
+                        <select name="currencies" class="form-control">
+                            <option value="-1">Выберите</option>
+                            {#currencies}
+                                <option value="{id}" {@eq key=selected value="true" type="boolean"} selected {/eq}>{code}</option>
+                            {/currencies}
+                        </select>
+                    </div>
+                    <div class="rTableHead"> 
+                        <input class="fieldCheckBox" type="checkbox" name="isCashIn" {@eq key=isCashIn value="true" type="boolean"} checked {/eq}>
+                    </div>
+                {/eq}
+            {/eq}
+            <div class="rTableHead"></div>
+            <div class="rTableHead"></div>
+            <div class="rTableHead">
+                <input type="number" class="field form-control" name="branchNumber" value="{branchNumber}">
+            </div>
+            <div class="rTableHead">
+                <input type="text" class="field form-control" name="name" value="{name}">
+            </div>
+            <div class="rTableHead">
+                <input type="text" class="field form-control" name="city" value="{city}">
+            </div>
+            <div class="rTableHead">
+                <input type="text" class="field form-control" name="address" value="{address}">
+            </div>
+            <div class="rTableHead">
+                <div class="inline_input">
+                    <input class="fieldCheckBox" type="checkbox" name="isAroundTheClock" {@eq key=isAroundTheClock value="true" type="boolean"} checked {/eq} />
+                    <label for="isAroundTheClock"><div class="margin-left-space">Круглосуточно</div></label>
                 </div>
+            </div>
+            <div class="rTableHead"></div>
+            {@eq key=type value="branch"}
                 <div class="rTableHead">
-                    <input class="fieldCheckBox" type="checkbox" name="isActive" {@eq key=isActive value="true" type="boolean"} checked {/eq} />
-                </div>
-                <div class="rTableHead">
-                    <select name="type">
-                      <option value="-1">Выберите</option>
-                      <option value="branch" {@eq key=type value="branch"} selected {/eq}>Отделение</option>
-                      <option value="atm" {@eq key=type value="atm"} selected {/eq}>Банкомат</option>
-                      <option value="atm24" {@eq key=type value="atm24"} selected {/eq}>Банкомат 24</option>
-                      <option value="terminal" {@eq key=type value="terminal"} selected {/eq}>Терминал</option>
+                    <select name="services">
+                        <option value="-1">Выберите</option>
+                        {#services}
+                            <option value="{id}" {@eq key=selected value="true" type="boolean"} selected {/eq}>{name}</option>
+                        {/services}
                     </select>
                 </div>
-                {@eq key=type value="-1"}
-                    <div class="rTableHead" ></div>
-                    <div class="rTableHead" ></div>
-                {:else}
-                    {@eq key=type value="branch"}
-                        <div class="rTableHead" ></div>
-                        <div class="rTableHead" ></div>
-                    {:else}
-                        <div class="rTableHead">
-                            <select name="currencies">
-                                <option value="-1">Выберите</option>
-                                {#currencies}
-                                    <option value="{id}" {@eq key=selected value="true" type="boolean"} selected {/eq}>{code}</option>
-                                {/currencies}
-                            </select>
-                        </div>
-                        <div class="rTableHead"> 
-                            <input class="fieldCheckBox" type="checkbox" name="isCashIn" {@eq key=isCashIn value="true" type="boolean"} checked {/eq}>
-                        </div>
-                    {/eq}
-                {/eq}
-                <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
                 <div class="rTableHead">
-                    <input type="number" class="field" name="branchNumber" value="{branchNumber}">
+                    <select name="clients" class="model_field form-control">
+                        <option value="-1">Выберите</option>
+                        <option value="INDIVIDUAL" {@eq key=clients value="INDIVIDUAL"} selected {/eq}>Физические лица</option>
+                        <option value="CORPORATION" {@eq key=clients value="CORPORATION"} selected {/eq}>Юридические лица</option>
+                        <option value="BOTH" {@eq key=clients value="BOTH"} selected {/eq}>Физические/Юридические лица</option>
+                    </select>
                 </div>
-                <div class="rTableHead">
-                    <input type="text" class="field" name="city" value="{city}">
-                </div>
-                <div class="rTableHead">
-                    <input type="text" class="field" name="address" value="{address}">
-                </div>
+                <div class="rTableHead" ></div>
+            {:else}
+                <div class="rTableHead" ></div>
+                <div class="rTableHead" ></div>
                 <div class="rTableHead"></div>
-                <div class="rTableHead"></div>
-                {@eq key=type value="branch"}
-                    <div class="rTableHead">
-                        <select name="services">
-                            <option value="-1">Выберите</option>
-                            {#services}
-                                <option value="{id}" {@eq key=selected value="true" type="boolean"} selected {/eq}>{name}</option>
-                            {/services}
-                        </select>
-                    </div>
-                    <div class="rTableHead">
-                        <select name="clients" class="model_field">
-                            <option value="-1">Выберите</option>
-                            <option value="INDIVIDUAL" {@eq key=clients value="INDIVIDUAL"} selected {/eq}>Физические лица</option>
-                            <option value="CORPORATION" {@eq key=clients value="CORPORATION"} selected {/eq}>Юридические лица</option>
-                            <option value="BOTH" {@eq key=clients value="BOTH"} selected {/eq}>Физические/Юридические лица</option>
-                        </select>
-                    </div>
-                    <div class="rTableHead" ></div>
-                {:else}
-                    <div class="rTableHead" ></div>
-                    <div class="rTableHead" ></div>
-                    <div class="rTableHead"></div>
-                {/eq}
-            {/eq}   
-                <div class="rTableHead">
-                    <input type="button" class="search" value="Поиск"/>
-                </div>
+            {/eq}
+            <div class="rTableHead">
+                <input type="button" class="search button-orange form-control" value="Поиск"/>
+                <input type="button" class="fetch-all form-control" value="Все"/>
+                <input type="button" class="reset-filters button-red form-control" value="Сбросить фильтры"/>
+            </div>
         </script>
 
         <script type="text/javascript" src="{% static 'branches/js/libs/jquery-1.7.2.min.js' %}"></script>

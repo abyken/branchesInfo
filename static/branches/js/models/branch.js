@@ -7,12 +7,18 @@ app.Branch = Backbone.Model.extend({
 
 		return base + this.id + "/";
 	},
+
+	original: null, 
 	
-	update: function(data) {
-		if(!this.get("isEdited"))
-			this.set("isEdited", true);
+	update: function(data, isEditedCallback) {
+		if(!this.original)
+			this.original = this.clone();
 
 		for(var key in data){
+			if(data[key] === this.get(key)){
+				continue;
+			}
+
 			switch(key) {
 				case "currencies":
 					this.set('currencies_verbose', app.branchList.getCurrenciesVerbose(data[key]));
@@ -27,10 +33,7 @@ app.Branch = Backbone.Model.extend({
 					this.set('schedule_verbose', app.branchList.getScheduleVerbose(data[key], this.get('isAroundTheClock'), this.get('isLimitedAccess')));
 					break;
 				case "isAroundTheClock":
-					this.set('schedule_verbose', app.branchList.getScheduleVerbose(this.get('schedule'), data[key], this.get('isLimitedAccess')));
-					break;
-				case "isLimitedAccess":
-					this.set('schedule_verbose', app.branchList.getScheduleVerbose(this.get('schedule'), this.get('isLimitedAccess'), data[key]));
+					this.set('schedule_verbose', app.branchList.getScheduleVerbose(this.get('schedule'), data[key]));
 					break;
 
 				default:
@@ -39,16 +42,26 @@ app.Branch = Backbone.Model.extend({
 
 			this.set(key, data[key]);
 		}
+		var isEdited = false;
+		if(this.original){
+			for(var key in this.original.attributes) {
+				if(this.original.get(key) !== this.get(key)) {
+					isEdited = true;
+					break;
+				}
 
+			}
+		}
+		isEditedCallback(isEdited);
 	},
 
-	setSchedule: function(schedule_type, name, value) {
+	setSchedule: function(schedule_type, name, value, isEditedCallback) {
 		var schedule_data = this.schedule_type(schedule_type),
 			schedule_item = schedule_data.schedule[schedule_data.index];
 
 		schedule_item[name] = value;
 
-		this.update({schedule: schedule_data.schedule});
+		this.update({schedule: schedule_data.schedule}, isEditedCallback);
 	},
 
 	schedule_type: function(schedule_type) {

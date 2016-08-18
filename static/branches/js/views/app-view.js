@@ -28,15 +28,11 @@ app.AppView = Backbone.View.extend({
 	},
 	addAll: function() {
 		app.branchList.each(this.addOne, this);
-		if(app.branchList.total > 15){
-			this.showLoadMore();
-		}
+		this.showLoadMore();
 	},
 	addSearchBar: function() {
 		this.$('#search-bar').html('');
 		var search = new app.Search({
-										isFetchAll: true,
-										isActive: true,
 										type: "-1"
 									});
 		var view = new app.SearchView({model: search});
@@ -76,7 +72,8 @@ app.AppView = Backbone.View.extend({
 	},
 
 	showLoadMore: function() {
-		$('#load_more').show();
+		if(app.branchList.total > 15)
+			$('#load_more').show();
 	}
 
 });

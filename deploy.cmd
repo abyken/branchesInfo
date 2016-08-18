@@ -142,6 +142,14 @@ IF EXIST "%DEPLOYMENT_TARGET%\manage.py" (
   )
 )
 
+:: 7. Load data
+IF EXIST "%DEPLOYMENT_TARGET%\manage.py" (
+  IF EXIST "%DEPLOYMENT_TARGET%\env\lib\site-packages\django" (
+    echo Load data.
+    env\scripts\python manage.py load_branch_data
+  )
+)
+
 popd
 
 :postPython

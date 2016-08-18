@@ -12,13 +12,19 @@ from django.db import transaction
 class Command(BaseCommand):
 
 	help = (
-		 u'Load branch data from app/fixtures/branches.json file'
+		 u'Clear and load branch data from app/fixtures/branches.json file'
 	)
 
 	@transaction.atomic
 	def handle(self, *args, **options):
-		print "STARTED"
 		data_string = ""
+		print "CLEANING BRANCHES..."
+		Branch.objects.all().delete()
+		Schedule.objects.all().delete()
+		Break.objects.all().delete()
+		Service.objects.all().delete()
+		print "BRANCHES DELETED"
+		print "STARTED"
 
 		with open(os.path.join(settings.BASE_DIR, 'branchesInfo/fixtures/branches.json'), 'r') as json_file:
 			data_string=json_file.read().replace('\n', '')
@@ -29,7 +35,7 @@ class Command(BaseCommand):
 			if value.lower() == u"круглосуточно":
 				branch.isAroundTheClock = True
 			elif value.lower() == u"пропускная система":
-				branch.isLimitedAccess = True
+				branch.access = Branch.LIMITED
 			else:
 				all_days_list = list(Day.objects.all().order_by('date_created'))
 				scheduleWD = branch.schedule.get(type=Schedule.WD)	
@@ -40,21 +46,21 @@ class Command(BaseCommand):
 				parts = value.split(";")
 				if len(parts) == 1:
 					time_parts = value.split("-")
-					scheduleWD.time_from = time_parts[0]
-					scheduleWD.time_to = time_parts[1]
+					scheduleWD.time_from = time_parts[0].strip()
+					scheduleWD.time_to = time_parts[1].strip()
 					scheduleWD.days.add(*all_days_list)
 				elif len(parts) > 1:
 					wd = parts[0].lower()[:5]
 					time_parts = parts[0][6:].split("-")
-					scheduleWD.time_from = time_parts[0]
-					scheduleWD.time_to = time_parts[1]
+					scheduleWD.time_from = time_parts[0].strip()
+					scheduleWD.time_to = time_parts[1].strip()
 					if wd == u"пн-пт":
 						scheduleWD.days.add(*all_days_list[:5])
 						if u"вых" not in parts[1].lower():
 							sd_parts = parts[1].lower().split(":")
 							time_parts = ":".join(sd_parts[1:]).split("-")
-							scheduleSD.time_from = time_parts[0]
-							scheduleSD.time_to = time_parts[1]
+							scheduleSD.time_from = time_parts[0].strip()
+							scheduleSD.time_to = time_parts[1].strip()
 							if u"сб" in sd_parts[0]:
 								scheduleSD.days.add(all_days_list[5])
 							if u"вс" in sd_parts[0]:
@@ -114,7 +120,8 @@ class Command(BaseCommand):
 								lng=item["location"]["lng"],
 								branchNumber=item["address"]["postalCode"],
 								city=item["address"]["city"],
-								address=item["address"]["streetAddress"]
+								address=item["address"]["streetAddress"],
+								name=item["info"]["ru"]["title"]
 							)
 			branch.branchBreak = Break.create_default()
 			branch.save()
@@ -132,8 +139,8 @@ class Command(BaseCommand):
 						branchBreak.isFlexible = True
 					else:
 						parts = info["value"].split("-")
-						branchBreak.time_from = parts[0]
-						branchBreak.time_to = parts[1]
+						branchBreak.time_from = parts[0].strip()
+						branchBreak.time_to = parts[1].strip()
 					branchBreak.save()
 
 				if info["name"] == u"Доступ:":

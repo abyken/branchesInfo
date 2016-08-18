@@ -117,7 +117,6 @@ class BranchManager(models.Manager):
 
 	def create_branch(self, **data):
 		
-
 		data['branchBreak'] = Break.create_default()
 
 		branch = Branch.objects.create(**data)
@@ -138,6 +137,9 @@ class BranchManager(models.Manager):
 		branchBreakObject.save()
 		
 		data['branchBreak'] = branchBreakObject
+
+		if not self.name and 'name' not in data:
+			data['name'] = self.get_type_cap()
 
 		for k, v in data.iteritems():
 			setattr(instance, k, v)
@@ -247,7 +249,7 @@ class Branch(BaseModel):
 	def get_info(self):
 		return {
 					"ru": {
-								"title": self.get_type_cap(),
+								"title": self.name,
 								"notes": self.get_notes()
 						  }
 				}
