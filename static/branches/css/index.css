@@ -36,13 +36,24 @@ input[type="text"], input[type="number"], input[type="time"] {
 }
 
 #content {
-	overflow: scroll;
+	overflow-y: scroll;
 }
 .info {
 	text-align: center;
 	padding-top: 10px;
 	padding-bottom: 10px;
 	font-weight: bold;
+}
+.load_more {
+	cursor: pointer;
+	text-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	font-weight: bold;
+	display: none;
+}
+.load_more:hover {
+	text-decoration: underline;
 }
 .rTable {       display: table;     width: 100%; } 
 .rTableRow {     display: table-row; } 

@@ -7,11 +7,11 @@ app.AppView = Backbone.View.extend({
 		app.branchList.on('reset', this.addAll, this);
 		app.branchList.fetch({success: this.hideSpinner});
 		this.addSearchBar();
-		$('#content').scroll(this.fetchByPage.bind(this));
+		$(window).scroll(this.fetchByPage.bind(this));
 	},
 	events: {
 		'click #add-row': 'initializeRow',
-		'resize': 'setTableBody',
+		'click #load_more': 'fetchNext',
 	},
 	initializeRow: function() {
 		this.showSpinner();
@@ -24,11 +24,11 @@ app.AppView = Backbone.View.extend({
 			$('#branch-list').prepend(view.render().el);
 		else
 			$('#branch-list').append(view.render().el);
-		this.setTableBody();
 		$('#spinner').hide();
 	},
 	addAll: function() {
 		app.branchList.each(this.addOne, this);
+		this.showLoadMore();
 	},
 	addSearchBar: function() {
 		this.$('#search-bar').html('');
@@ -45,10 +45,16 @@ app.AppView = Backbone.View.extend({
 	},
 
 	fetchByPage: function(event) {
-		if($("#content").scrollTop() + $("#content").innerHeight() >= $("#content")[0].scrollHeight) {
+		this.hideLoadMore();
+		if($(window).scrollTop() + $(window).innerHeight() >= window.document.documentElement.scrollHeight) {
 			this.showSpinner();
             app.branchList.fetch({url: app.branchList.next, remove: false, success: this.hideSpinner});
         }
+	},
+
+	fetchNext: function() {
+		this.showSpinner();
+        app.branchList.fetch({url: app.branchList.next, remove: false, success: this.hideSpinner});
 	},
 
 	hideSpinner: function() {
@@ -59,7 +65,12 @@ app.AppView = Backbone.View.extend({
 		$('#spinner').show();
 	},
 
-    setTableBody: function() {
-	    $("#content").height($(window).height() - ($("#header").height() + $("#search-bar").height()) + 200);
+	hideLoadMore: function() {
+		$('#load_more').hide();
+	},
+
+	showLoadMore: function() {
+		$('#load_more').show();
 	}
+
 });
