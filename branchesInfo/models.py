@@ -188,7 +188,6 @@ class Branch(BaseModel):
 	type = models.CharField(max_length=10, choices=TYPE_OPTIONS, default=BRANCH)
 	isCashIn = models.BooleanField(default=False)
 	isEmpty = models.BooleanField(default=True)
-	isLimitedAccess = models.BooleanField(default=False)
 	isAroundTheClock = models.BooleanField(default=False)
 	lat = models.DecimalField(max_digits=15, decimal_places=6, null=True, blank=True)
 	lng = models.DecimalField(max_digits=15, decimal_places=6, null=True, blank=True)
