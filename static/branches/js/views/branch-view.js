@@ -78,6 +78,8 @@ app.BranchView = Backbone.View.extend({
 	},
 
 	edit: function(event) {
+		this.closeAll(event);
+
 		if($(event.target).prop("tagName") === "DIV"){
 			$(event.target).addClass("editing");
 			this.input = $(event.target).find('input');
@@ -91,6 +93,8 @@ app.BranchView = Backbone.View.extend({
 	},
 
 	editSchedule: function(event) {
+		this.closeAll(event);
+
 		if($(event.target).prop("tagName") === "DIV"){
 			this.schedule = $(event.target).find("#schedule");
 			this.label = $(event.target).find("#schedule_label");
@@ -106,6 +110,8 @@ app.BranchView = Backbone.View.extend({
 	},
 
 	editBreak: function(event) {
+		this.closeAll(event);
+
 		if($(event.target).prop("tagName") === "DIV"){
 			this.branchBreak = $(event.target).find("#break");
 			this.break_label = $(event.target).find("#break_label");
@@ -121,6 +127,8 @@ app.BranchView = Backbone.View.extend({
 	},
 
 	editCurrecies: function(event) {
+		this.closeAll(event);
+
 		if($(event.target).prop("tagName") === "DIV"){
 			this.currencies = $(event.target).find("#currencies");
 			this.currencies_label = $(event.target).find("#currencies_label");
@@ -136,6 +144,8 @@ app.BranchView = Backbone.View.extend({
 	},
 
 	editServices: function(event) {
+		this.closeAll(event);
+		
 		if($(event.target).prop("tagName") === "DIV"){
 			this.services = $(event.target).find("#services");
 			this.services_label = $(event.target).find("#services_label");
