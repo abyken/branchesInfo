@@ -15,6 +15,14 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_HOST_USER = 'postmaster@sandbox1673ccec02444f7983ac3df600c09599.mailgun.org'
+EMAIL_HOST_PASSWORD = 'zp8N76r9dpXbbqvRsFYpZLSCrBMK29LX'
+SERVER_EMAIL = 'halykbranches@support.com'
+DEFAULT_FROM_EMAIL = 'Halyk Branches'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
