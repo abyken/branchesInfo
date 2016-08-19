@@ -31,9 +31,6 @@ body {
 	display: none;
 }
 
-#content {
-	overflow-y: scroll;
-}
 .info {
 	text-align: center;
 	padding-top: 10px;
