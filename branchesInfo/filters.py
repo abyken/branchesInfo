@@ -7,6 +7,8 @@ class BranchFilter(django_filters.FilterSet):
 		model = Branch
 
 	isActive = django_filters.MethodFilter()
+	isCashIn = django_filters.MethodFilter()
+	isAroundTheClock = django_filters.MethodFilter()
 	type = django_filters.MethodFilter()
 	currencies = django_filters.MethodFilter()
 	branchNumber = django_filters.MethodFilter()
@@ -18,6 +20,13 @@ class BranchFilter(django_filters.FilterSet):
 
 	def filter_isActive(self, queryset, value):
 		return queryset.filter(isActive=value)
+
+	def filter_isCashIn(self, queryset, value):
+		return queryset.filter(isCashIn=value)
+
+	def filter_isAroundTheClock(self, queryset, value):
+		print value
+		return queryset.filter(isAroundTheClock=value)
 
 	def filter_type(self, queryset, value):
 		return queryset.filter(type=value)
