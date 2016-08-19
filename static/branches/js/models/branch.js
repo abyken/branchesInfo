@@ -15,10 +15,6 @@ app.Branch = Backbone.Model.extend({
 			this.original = this.clone();
 
 		for(var key in data){
-			if(data[key] === this.get(key)){
-				continue;
-			}
-
 			switch(key) {
 				case "currencies":
 					this.set('currencies_verbose', app.branchList.getCurrenciesVerbose(data[key]));
@@ -39,7 +35,6 @@ app.Branch = Backbone.Model.extend({
 				default:
 					break;
 			}
-
 			this.set(key, data[key]);
 		}
 		var isEdited = false;

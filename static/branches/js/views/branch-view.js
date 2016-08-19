@@ -194,13 +194,17 @@ app.BranchView = Backbone.View.extend({
 	onChecked: function(event) {
 		var data = {};
 		data[event.target.name] = !this.model.get(event.target.name);
-		this.model.update(data, this.setRowEdited.bind(this));
+		if(event.target.name === 'isAroundTheClock')
+			this.isAroundTheClock_data = data;
+		else 
+			this.model.update(data, this.setRowEdited.bind(this));
 	},
 
 	onModelFieldSelected: function(event) {
 		var data = {};
 		data[event.target.name] = $(event.target).find(":selected").val();
 		this.model.update(data, this.setRowEdited.bind(this));
+
 	},
 
 	onManyToManySelected: function(event){
@@ -208,10 +212,9 @@ app.BranchView = Backbone.View.extend({
 			data = {};
 			data[name] = [];
 		$("input[name='"+event.target.name+"']:checked").each(function(index, item) {
-			data[name].push(item.value);
+			data[name].push(parseInt(item.value));
 		});
-
-		this.model.update(data, this.setRowEdited.bind(this));
+		this.manytomany_data = data;
 	},
 
 	updateBranch: function(event) {
@@ -233,6 +236,10 @@ app.BranchView = Backbone.View.extend({
 	closeSchedule: function() {
 		this.schedule.hide();
 		this.label.show();
+		if(this.isAroundTheClock_data){
+			this.model.update(this.isAroundTheClock_data, this.setRowEdited.bind(this));
+			this.isAroundTheClock_data = {};
+		}
 	},
 
 	closeBreak: function() {
@@ -243,19 +250,23 @@ app.BranchView = Backbone.View.extend({
 	closeCurrencies: function() {
 		this.currencies.hide();
 		this.currencies_label.show();
+		this.model.update(this.manytomany_data, this.setRowEdited.bind(this));
+		this.manytomany_data = {};
 	},
 
 	closeServices: function() {
 		this.services.hide();
 		this.services_label.show();
+		this.model.update(this.manytomany_data, this.setRowEdited.bind(this));
+		this.manytomany_data = {};
 	},
 
 	closeAll: function(event) {
-
-		if(this.schedule && this.label)
+		if(this.schedule && this.label){
 			if(!this.schedule.parent().is(event.target) && this.schedule.parent().has(event.target).length === 0){
 				this.closeSchedule();
 			}
+		}
 
 		if(this.branchBreak && this.break_label)
 			if(!this.branchBreak.parent().is(event.target) && this.branchBreak.parent().has(event.target).length === 0){
